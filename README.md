@@ -1,11 +1,13 @@
-# Tutup Kas Lion Group v2
+# Tutup Kas Lion Group V3
 
-[Unduh langsung ZIP v2](https://github.com/andisinga015/systemtutupkas/raw/main/tutupkas-lion-group-v2.zip) · [SHA256](tutupkas-lion-group-v2.zip.sha256)
+[Unduh ZIP V3 langsung](https://github.com/andisinga015/systemtutupkas/raw/main/tutupkas-lion-group-v3.zip) · [Checksum SHA256](tutupkas-lion-group-v3.zip.sha256)
 
-Paket lengkap: source backend/frontend, frontend siap pakai, migrasi database, worker, rekonsiliasi, Crawl All, Help Center, tests, skrip upgrade/rollback dan panduan Indonesia. Tidak memuat database operasional atau key Google.
+Pembaruan korektif V2: pembacaan sumber DEPO/QRIS memakai kolom tetap yang dikonfirmasi, hari kosong terverifikasi, tanggal massal/individual terpisah, Stop/Batalkan Antrean persisten, retry item tersisa dan penanganan job gagal. Pemetaan tujuan, aturan fee/transfer dan perlindungan finansial dipertahankan.
 
-Untuk VPS yang sudah berjalan, baca [panduan upgrade v2](UPGRADE_V2.md), unggah ZIP melalui SFTP, ekstrak ke staging, lalu jalankan `sudo bash deploy/upgrade.sh`. Akun admin, database, Nginx, HTTPS dan key yang ada dipertahankan. Jangan membuat database atau admin ulang.
+[Ringkasan implementasi dan berkas](RELEASE_NOTES_V3.md) · [Panduan upgrade V2 ke V3](UPGRADE_V3.md) · [Laporan pengujian](TEST_REPORT.md)
 
-106 tes backend lulus pada Python 3.10 dan 3.12, serta 4 tes Chromium. Lihat [laporan pengujian](TEST_REPORT.md). Google Sheets dan deployment VPS sebenarnya belum dijalankan oleh pengembang untuk pembaruan ini.
+137 tes backend lulus pada Python 3.10/3.12 dan 5 tes Chromium lulus. Pengembang belum menjalankan live Google Sheets crawl/write atau deployment VPS untuk V3.
 
-Berkas `tutupkas-lion-group.zip` adalah arsip v1. Gunakan **tutupkas-lion-group-v2.zip** untuk pembaruan terbaru.
+Untuk VPS yang sudah berjalan: unggah ZIP melalui SFTP, ekstrak ke staging terpisah, ikuti panduan, lalu `sudo bash deploy/upgrade.sh`. Skrip membackup DB/aplikasi/frontend, mempertahankan akun dan konfigurasi, menjalankan migrasi aditif serta menahan antrean V2 lama sebelum worker V3 dimulai. Tidak mengganti Nginx, HTTPS, key atau app.env. Rollback disediakan.
+
+Berkas ZIP V1 dan V2 tetap disimpan sebagai arsip; gunakan **tutupkas-lion-group-v3.zip** untuk koreksi terbaru. Paket tidak memuat DB operasional atau private key.

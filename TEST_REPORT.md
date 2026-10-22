@@ -1,22 +1,73 @@
-# Laporan pengujian v2 — 22 Oktober 2026
+# Laporan pengujian V3 — 23 Oktober 2026
 
-## Hasil lokal
+## Hasil
 
 | Pemeriksaan | Hasil |
 |---|---|
-| Backend Python 3.12.14 | **106 passed** |
-| Backend Python 3.10.22 (kompatibilitas VPS) | **106 passed** |
-| Chromium Playwright dengan API sebenarnya | **4 passed** |
-| TypeScript strict + Vite build | Berhasil; aset JavaScript/CSS memakai hash |
-| Alembic `check` dan `current` | Tidak ada perubahan model tertinggal; `daf814b2a736 (head)` |
-| Migrasi DB v1 berisi data | Berhasil; semua kolom/baris asli pada tabel yang diisi tetap identik |
-| SQLite integrity dan foreign_key_check setelah migrasi | `ok`, tanpa pelanggaran |
-| Registry panduan | 21 artikel, 12 kategori; related/context links dan query wajib valid |
-| Bash syntax + Python compile | Berhasil untuk skrip deploy/setup dan modul aplikasi |
+| Backend Python 3.12.14 | **137 passed** |
+| Backend Python 3.10.22 | **137 passed** |
+| Chromium Playwright + API sebenarnya | **5 passed** |
+| TypeScript strict/Vite production build | Berhasil, aset hash |
+| Alembic upgrade/check/current | `b7c31ef05a92 (head)`, tidak ada perubahan model tertinggal |
+| Migrasi database v1/v2 berisi data | Lulus, original rows/columns tetap sama sebelum langkah pemeliharaan antrean yang disengaja |
+| SQLite integrity dan foreign keys | `ok`, tanpa pelanggaran pada fixture migrasi |
+| Syntax Bash/Python | Lulus |
+| Help Center | 22 artikel dalam 12 kategori; alur/aturan sumber dan pembatalan diperbarui |
 
-Pytest menghasilkan satu StarletteDeprecationWarning tentang httpx TestClient, tanpa test gagal. Dependensi aplikasi tidak diubah untuk menyembunyikan peringatan itu.
+Satu StarletteDeprecationWarning terkait httpx TestClient tetap muncul pada pytest; tidak ada test gagal. Data palsu dan pengaturan browser hanya berada dalam pengujian, bukan implementasi processing aplikasi.
 
-Perintah reproduksi:
+## Apa yang rusak dan dikoreksi
+
+1. `Day.metric()` mencari header unik sebelum memeriksa hari kosong; runner mengulang header lookup untuk source_cell, biaya dan kiriman. V3 membaca tata letak SUMBER tetap sesuai DOC DEPO/QRIS. Tidak mengubah resolver tujuan, perhitungan fee atau formula rekonsiliasi.
+2. Deteksi transaksi bergantung pada posisi header kumulatif. V3 menggunakan payload kolom sumber yang diketahui; total kumulatif, saldo, dekorasi, formula kosong dan nol template bukan transaksi. Missing/ambiguous date, invalid numeric/formula dan error Google tetap error.
+3. Satu tanggal UI mengendalikan massal/individual. Sekarang tiap WEB memiliki tanggal/statusnya sendiri dan dialog Start menangkap tanggal eksekusi yang dikonfirmasi; respons tanggal lama tidak dipakai ketika tanggal berubah.
+4. Tidak ada pembatalan dan unexpected exception dapat meninggalkan job aktif untuk restart berulang. V3 menambahkan cancel/stop persisten, finalisasi aman, penjagaan konflik selama CANCEL_REQUESTED dan retry item belum selesai. Canceled job tidak di-resume; error tak terduga menjadi FAILED/PARTIAL dengan catatan.
+
+## Cakupan keuangan/sumber
+
+- DEPO J/K/L, H dan I digunakan langsung walau header hilang, ganda atau menyesatkan. M/BALANCE tidak digunakan sebagai saldo bank.
+- QRIS I/J/K, G dan H terpisah dari tata letak DEPO; header() dipasang sebagai fungsi yang menggagalkan test untuk membuktikan semua jalur sumber tidak memanggilnya.
+- Fixture 18 Oktober: pemisah 18 pada baris 309 dan 19 pada baris 310; closing row 309. DEPO 0, WD 0, saldo 2.355.000 dari L306, biaya/fee kosong nol dan tidak menciptakan kiriman.
+- Hari bertransaksi tetap memakai closing kumulatif nonnol; baris berikutnya tidak ikut dihitung. Blank total hari kosong dibedakan dari error formula, missing date, ambiguous date, grid sempit dan saldo rusak.
+- Biaya H DEPO dijumlah bertanda lintas tab sebelum ABS. Biaya G QRIZZ/E-POWER tetap terpisah dari fee H. Multiple FEE QRIS PERIODE mempertahankan teks/newline, dijumlah pada tanggal transaksi; FEE WD AUTO sekali meskipun beberapa baris cocok. Zero fee tetap normal.
+- Transfer I DEPO/H QRIS, bank dari nama tab DEPO, warna cokelat/biru yang sudah disetujui, overflow BCA→MANDIRI→BRI→BNI dan Note asli tetap diuji. Slot penuh, TOTAL, formula, Note manual, area merged dan konten asing tetap dilindungi.
+- Read-back, ownership, duplicate prevention, uncertain intent, selective retry, URL revision, resync dan Clear seluruh WEB tetap lulus regresi V2.
+- Laporan deposit harian tetap baca saja. Formula, STATUS, KETERANGAN, Note dan format fixture tetap utuh; nonnol kecil, error formula dan konsolidasi nol dengan WEB berselisih tidak menjadi Clear.
+- Status dua tanggal diperiksa terpisah: tanggal 15 saldo nol/KLOP, tanggal 16 selisih -30.278.535/TIDAK KLOP, tanpa salah memakai record tanggal lain.
+
+## Cakupan pembatalan/worker
+
+- API admin/CSRF melindungi cancel. Antrean dapat langsung dibatalkan; preview yang dibatalkan tidak menulis atau membuat ledger finansial.
+- Stop ketika grid sumber sedang dibaca tidak memulai item berikutnya.
+- Stop ketika POST sudah dijalankan tetap melakukan read-back dan menyimpan VERIFIED. Retry tidak mengulang sel/item yang sudah sukses.
+- Koneksi putus setelah tulisan diterima meninggalkan PREPARED/error yang dapat direkonsiliasi saat retry, bukan dihapus atau diubah menjadi sukses palsu.
+- Cancel batch antre/berjalan, selective retry WEB tersisa, recovery cancellation request setelah restart, serta unexpected run/batch exception difinalkan tanpa RUNNING/QUEUED abadi.
+- Retry GET boleh berhenti di antara attempt; POST yang telah dikirim tetap mengikuti retry/read-back bounded untuk memastikan hasil.
+- Recheck saldo dibatalkan tanpa mengubah run finansial sukses. Pembatalan saat konsolidasi tidak memakai saldo hijau lama untuk mengizinkan Clear.
+- Fixture V2 di-upgrade tanpa perubahan history/status asli oleh migrasi. Langkah prepare-v3-upgrade kemudian sengaja membatalkan pekerjaan belum selesai, mempertahankan run sukses, hash akun dan hasil yang tersimpan, serta mencatat audit.
+- Helper rollback stdlib diuji pada snapshot skema V2; tidak membutuhkan model V3 atau memulai worker.
+
+Perbandingan langsung dengan ZIP V2 juga lulus: resolver tujuan, resolver laporan dan aturan angka (`types.py`) identik byte demi byte. AST fungsi fees, signed_sum, eligible_description, parse_date, separator_dates dan check_write tetap sama. Perubahan kolom sumber dan kontrol eksekusi tidak mengganti aturan bisnis tersebut.
+
+## Pengukuran pembacaan sumber
+
+Fixture full run mencatat **1 grid DEPO + 2 grid QRIS = 3 pengambilan grid sumber untuk 17 item yang memakai sumber**. Semua modul tab memakai Day/grid yang sama; sumber yang gagal juga dibaca satu kali untuk konteks itu. Ini membuktikan tidak ada fetch ulang per metrik. Angka tersebut adalah jumlah panggilan `grid()` pada fake, bukan jumlah HTTP Google atau benchmark waktu live. V2 sudah memiliki cache tab; laporan ini tidak mengklaim percepatan live V3 terhadap V2. Pembacaan tujuan untuk proteksi dan read-back tetap dilakukan.
+
+## Browser
+
+Lima skenario menguji login/persist URL/validasi tanpa key, autentikasi, Help Center, sidebar desktop/mobile/zoom dan alur V3. Skenario V3 memeriksa tanggal massal tidak mengubah tanggal individual, tanggal VELBETT tidak mengubah FANTASI/massal, request individual membawa tanggalnya, status berubah mengikuti tanggal, batch memakai tanggal massal untuk kedua WEB, serta cancel preview/run/batch melalui API/UI nyata di detail dan riwayat.
+
+Skenario antrean memakai fixture konfigurasi yang dinyatakan valid dalam DB temporer; tidak ada worker atau Google yang berjalan pada browser suite. Fixture itu dibatasi secara eksplisit ke `/tmp/tutupkas-e2e.*` dengan password test acak, dan tidak dapat digunakan pada DB operasional. Pemrosesan/write/stop running diuji terpisah melalui engine dan FakeSheets.
+
+Viewport 1920×1080, 1366×768, 1280×720, 1024×768, mobile 390×844, dan CSS zoom Chromium 125/150% tetap lulus. CSS zoom bukan pengukuran native zoom seluruh browser. Screenshot pengujian ada di docs.
+
+## Belum diverifikasi
+
+**Tidak ada pengujian live crawl + write Google Sheets untuk V3 yang dijalankan pengembang.** Key/SSH VPS tidak tersedia di lingkungan ini. Kesesuaian workbook nyata, izin Google, nilai warna aktual, hasil formula aktual, instalasi/rollback systemd/Nginx/HTTPS dan cache domain harus diperiksa melalui smoke test pada VPS pengguna. Tidak ada klaim penulisan live berhasil berdasarkan fixture.
+
+Panduan: [UPGRADE_V3.md](UPGRADE_V3.md). Jalankan pada salinan kerja yang Anda izinkan; source/destination tidak otomatis ditarik ketika URL disimpan/divalidasi. Rincian berkas/perbaikan: [RELEASE_NOTES_V3.md](RELEASE_NOTES_V3.md).
+
+Reproduksi lokal:
 
 ```bash
 .venv/bin/pytest backend/tests -q
@@ -25,44 +76,3 @@ npm --prefix frontend run build
 PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium bash scripts/e2e.sh
 bash -n deploy/*.sh scripts/*.sh
 ```
-
-## Cakupan backend
-
-- Sesi admin, CSRF/origin, logout, expiry, limiter, lifecycle WEB, revisi sumber, validasi/tab dan perbedaan bulan.
-- Aturan sumber dan ketujuh modul tetap diuji, termasuk closing/carry-forward, biaya bertanda, fee, parsing tanggal, slot kiriman bank, warna, formula kosong, Note manual, sel merged dan konflik sumber.
-- Baca ulang tulisan, intent setelah transport crash, kegagalan satu modul, retry selektif, dependensi agregat dan pencegahan append/duplikasi.
-- Laporan VELBETT/FANTASI/BBTOTO pada blok horizontal bergeser/bersebelahan dengan kolom kosong; penanda case/whitespace/newline, huruf vertikal, merged label serta tabel bertumpuk. Marker hilang, blok ganda, header/date hilang/ganda dan konsolidasi tidak unik harus berhenti.
-- Nol numerik serta teks nol/desimal/negative zero diterima; selisih sekecil `0.000000000001` tetap nonnol. Kosong/bool/formula error/NaN/Infinity ditolak. Nilai formula stale dicoba ulang, dan satu pengamatan nol terakhir saja belum cukup.
-- Laporan hanya dibaca: nilai/formula/Note/warna/STATUS/KETERANGAN tetap identik, tidak ada ledger laporan, writer dan SheetsClient menolak penulisan sebelum HTTP.
-- Penulisan SUCCESS dapat mempunyai rekonsiliasi NOT_BALANCED; error per WEB memuat pesan, saldo/selisih dan sel yang benar. Konsolidasi nol tidak menjadikan status keseluruhan KLOP bila satu WEB tidak klop. Ledger belum VERIFIED atau sumber parsial tidak dapat Clear.
-- Recheck saldo menggunakan job persisten dan hanya membaca laporan; jumlah write/transfer/Note tetap. Koreksi menjadi nol menyelesaikan error rekonsiliasi tanpa replay tulisan.
-- Crawl All memakai engine nyata terhadap FakeSheets: dua WEB aktif berurutan, nonaktif dikecualikan, progress aktual, partial success karena konfigurasi hilang, retry hanya WEB gagal dan melanjutkan entry setelah restart. Race individual vs batch diuji dengan dua session/thread SQLite; hanya satu start diterima.
-- URL baru mereset validasi, mempertahankan snapshot/history/ledger lama, tidak membuat run saat Save/Validate, menandai Perlu Sinkronisasi dan menulis ke tujuan baru hanya melalui resync manual. Source baru mereset tab; resync sumber yang sama mengadopsi ownership yang sah tanpa transfer duplikat, termasuk rentang tanggal dengan riwayat masing-masing tanggal. Dua URL lama tidak dipilih secara arbitrer dan bulan lain tetap terpisah.
-- Migrasi v1 membandingkan data asli pada akun, sesi, WEB, source/revision/tab, destination/history, run/item/error, ledger, transfer ownership, Clear lama, alias, validation dan audit. Hanya bulan yang memiliki satu tujuan lama diadopsi; dua URL lama tetap menunggu pilihan admin. Clear global baru tetap kosong.
-- Worker subprocess benar-benar dijalankan untuk memulihkan job terotorisasi dan mencatat key tidak tersedia; lock menolak worker kedua. Recovery batch diuji dari state RUNNING persisten tanpa mengulang entry sukses.
-
-FakeSheets hanya ada pada kode pengujian. Pengujian engine ini tidak menggunakan API Google asli dan bukan bukti kesesuaian workbook asli.
-
-## Cakupan browser
-
-Empat skenario menjalankan UI React dengan FastAPI dan DB temporer sebenarnya, bukan respons API tiruan:
-
-1. Login, tambah WEB, simpan/persist URL, kegagalan validasi tanpa key, daftar sheet, history, pemblokiran Start tanpa tujuan dan tampilan satu tujuan bulanan.
-2. Password salah ditolak; tidak ada registrasi publik.
-3. Help Center dari sidebar, search isi/keywords case-insensitive untuk `validasi`, `sheet aktif`, `crawl semua`, `balance tidak klop`, `url baru`, hasil kosong, navigasi artikel dan bantuan kontekstual.
-4. Sidebar pada 1920×1080, 1366×768, 1280×720, 1024×768, zoom CSS Chromium 125%/150% dan mobile 390×844. Scroll sidebar tidak memindahkan halaman utama, Help terjangkau, tidak ada overflow horizontal, focus trap/restore/Escape/close berfungsi. CSS zoom menguji tekanan layout; ini bukan pengukuran zoom native semua browser.
-
-Screenshot tersimpan di folder docs. Browser E2E tidak menulis Google; alur finansial penuh diuji pada integrasi backend terhadap FakeSheets.
-
-## Belum dijalankan dari lingkungan pengembang
-
-| Pemeriksaan | Status |
-|---|---|
-| Akses service account dan workbook Google aktual | Belum tersedia di cloud; key tetap pada VPS pengguna |
-| Kecocokan struktur, warna, rekening dan formula workbook aktual | Memerlukan smoke test pada salinan kerja yang pengguna otorisasi |
-| Penulisan/read-back/Note pada Google asli | Belum dijalankan oleh pengembang untuk v2 |
-| Eksekusi upgrade/rollback sebagai root pada VPS sebenarnya | Belum dijalankan; skrip diperiksa sintaks dan panduan disediakan |
-| Nginx, Certbot, domain HTTPS dan cache aktual | Tidak diubah atau diuji dari cloud |
-| Restore cloud pada task baru setelah Publish | Belum diverifikasi; konfigurasi tersimpan sebagai draft |
-
-Ikuti [UPGRADE_V2.md](UPGRADE_V2.md) untuk backup, staging, migrasi, cache, health, smoke test, verifikasi Google hanya baca dan rollback. Jangan menganggap test lokal sebagai bukti deployment berhasil. Pengguna dapat menjalankan `scripts/verify-real-run.py RUN_ID` pada VPS setelah Start nyata yang disetujui; helper hanya membaca dan membandingkan ledger serta laporan, tanpa membuat tulisan atau otomatis Clear.
