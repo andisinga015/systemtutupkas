@@ -1,0 +1,36 @@
+[
+  {
+    "historical_rows_per_tab": 4000,
+    "source_tabs": 3,
+    "source_api_calls": 84,
+    "destination_fixture_reads": 43,
+    "cell_writes": 22,
+    "source_read_ms": 277.15,
+    "overall_processing_ms": 514.2,
+    "largest_response_bytes": 22409,
+    "rss_mb": 129.33,
+    "peak_rss_mb": 129.04,
+    "status": "SUCCESS",
+    "golden_values_coordinates_notes_banks_match": true,
+    "oom": false,
+    "address_space_limit_mib": 1536,
+    "network": "offline fixture; no Google/throttle/latency"
+  },
+  {
+    "historical_rows_per_tab": 40000,
+    "source_tabs": 3,
+    "source_api_calls": 624,
+    "destination_fixture_reads": 43,
+    "cell_writes": 22,
+    "source_read_ms": 1908.54,
+    "overall_processing_ms": 2147.67,
+    "largest_response_bytes": 22447,
+    "rss_mb": 128.98,
+    "peak_rss_mb": 128.6,
+    "status": "SUCCESS",
+    "golden_values_coordinates_notes_banks_match": true,
+    "oom": false,
+    "address_space_limit_mib": 1536,
+    "network": "offline fixture; no Google/throttle/latency"
+  }
+]

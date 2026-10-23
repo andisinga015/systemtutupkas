@@ -1,0 +1,65 @@
+[
+  {
+    "version": "v3",
+    "historical_rows": 4000,
+    "historical_cells": 52000,
+    "api_calls": 2,
+    "source_read_ms": 2074.01,
+    "overall_ms": 2075.45,
+    "rss_mb": 118.35,
+    "peak_rss_mb": 265.84,
+    "largest_response_bytes": 32087679,
+    "response_bytes": 32087821,
+    "retained_rows": 4310,
+    "metrics": [
+      0,
+      0,
+      2355000
+    ],
+    "oom": false,
+    "address_space_limit_mib": 1536,
+    "network": "offline lazy fixture; no throttle/latency"
+  },
+  {
+    "version": "v4",
+    "historical_rows": 4000,
+    "historical_cells": 52000,
+    "api_calls": 27,
+    "source_read_ms": 80.28,
+    "overall_ms": 81.48,
+    "rss_mb": 45.32,
+    "peak_rss_mb": 45.22,
+    "largest_response_bytes": 22409,
+    "response_bytes": 448209,
+    "retained_rows": 3,
+    "metrics": [
+      0,
+      0,
+      2355000
+    ],
+    "oom": false,
+    "address_space_limit_mib": 1536,
+    "network": "offline lazy fixture; no throttle/latency"
+  },
+  {
+    "version": "v4",
+    "historical_rows": 40000,
+    "historical_cells": 520000,
+    "api_calls": 207,
+    "source_read_ms": 604.04,
+    "overall_ms": 605.28,
+    "rss_mb": 44.26,
+    "peak_rss_mb": 44.11,
+    "largest_response_bytes": 22447,
+    "response_bytes": 4378177,
+    "retained_rows": 3,
+    "metrics": [
+      0,
+      0,
+      2355000
+    ],
+    "oom": false,
+    "address_space_limit_mib": 1536,
+    "network": "offline lazy fixture; no throttle/latency"
+  }
+]
