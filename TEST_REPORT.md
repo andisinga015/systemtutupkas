@@ -1,56 +1,61 @@
-# Laporan pengujian V4 — 23 Oktober 2026
+# Laporan pengujian V4.1 — 23 Oktober 2026
 
-V4 adalah koreksi backend pembacaan Google Sheets/memori. Pengujian memakai fixture terisolasi; belum ada akses key/Google/SSH VPS produksi.
+V4.1 mengganti akses tujuan dan laporan yang padat menjadi reader terbatas dengan indeks struktur temporer. Pengujian memakai fixture terisolasi; pengembang belum mengakses key Google atau SSH VPS pengguna.
 
-| Pemeriksaan | Hasil |
+| Pemeriksaan | Hasil aktual |
 |---|---|
-| Backend Python 3.12.14 | **163 passed** |
-| Backend Python 3.10.22 | **163 passed** |
-| Chromium Playwright + API sebenarnya | **5 passed** |
+| Backend Python 3.12.14 | **198 passed**, 76,76 detik |
+| Backend Python 3.10.22 | **198 passed**, 88,61 detik |
+| Chromium Playwright dengan API sebenarnya | **5 passed**, 34,6 detik |
 | TypeScript strict / Vite build | Berhasil |
-| Source frontend/CSS dan 59 aset public | Identik byte dengan ZIP V3 |
-| Parser, resolver tujuan/laporan, writer, types, reconciliation, operations, workflow, models | Identik byte dengan ZIP V3 |
-| Alembic check/current | Tidak ada operasi baru, `b7c31ef05a92 (head)` |
-| Migrasi populated fixture / pemeliharaan antrean V3 dan V4 | Akun, history, hasil dan ownership dipertahankan; cancellation diaudit |
-| Syntax Python/Bash dan full Git diff review terpisah | Lulus |
-| Streaming response bounds, recovery setelah crash, log privat/rotasi | Lulus |
-| Probe sumber dan satu website, RLIMIT_AS 1536 MiB | Lulus, tanpa OOM |
+| Frontend sources dan seluruh 59 public assets | Identik byte dengan ZIP V4 |
+| Source reader/parser, auth/API, models, workflow, worker, operations, batches, job control, diagnostics | Identik byte dengan ZIP V4 |
+| Transport request/auth/source/write | AST fungsi identik V4; hanya jalur grid tujuan diganti |
+| Alembic check/current | Tidak ada operasi baru; `b7c31ef05a92 (head)` |
+| Maintenance V3/V4/V4.1 pada populated DB fixture | Akun/history/intents/ownership dipertahankan, penahanan antrean diaudit |
+| Python/Bash syntax dan diff terhadap ZIP V4 | Lulus |
+| Probe sparse/terformat dan satu website lengkap | Tanpa OOM di RLIMIT_AS 1536 MiB |
 
-Satu StarletteDeprecationWarning mengenai httpx TestClient masih muncul. Dependensi tidak diganti untuk patch ini.
+Tidak ada tes backend gagal, skipped atau xfailed pada kedua full-suite run. Satu `StarletteDeprecationWarning` mengenai httpx TestClient muncul; dependensi tidak diganti untuk patch ini. Lima tes browser mencakup autentikasi, konfigurasi, dashboard, riwayat, tanggal individual/batch dan cancel. UI tidak diubah, termasuk footer v3.0.
 
-## Regresi finansial
+## Regresi yang dipertahankan
 
-Golden output diekspor dengan menjalankan engine V3 dari ZIP terkirim SHA256 `2437bc71fd4369b4525700e3f3bdfd8239d650abfaa1ec5173b68b640c68bc65`, pada satu DOC DEPO dan dua DOC QRIS. V4 dibandingkan terhadap **22 cell writes**: tab/alamat/nilai/deskripsi/Note/bank/fingerprint transaksi sama persis. Penggantian sumber dengan ranges API V4 menghasilkan output yang sama. Retry satu item hanya membaca sumber yang diperlukan.
+Seluruh 163 kasus V4 tetap dijalankan. Satu kasus tujuan yang dahulu mengharapkan guard berdasarkan alokasi diganti dengan pembacaan bounded yang berhasil; assertion guard sumber tidak dihapus. Tambahan 34 kasus reader V4.1 dan satu kasus CLI V4.1 menghasilkan 198 kasus total.
 
-Parser V3 juga dibandingkan langsung dengan source_day untuk hari aktif/kosong, QRIZZ/E-POWER, biaya bertanda, multi-fee dan brown/blue. Referensi 18 Oktober memberikan **0 DEPO, 0 WD, saldo 2.355.000**, dengan sumber saldo pada baris absolut yang sama. Numeric date diformat, missing/duplicate/ambiguous date, formula error dan nominal rusak tetap dibedakan dari hari kosong. Batas resource menghasilkan error, tanpa memotong transaksi atau nol palsu.
+Golden 22 output V3/V4 tidak diganti: TOTAL DEPO, TOTAL WD, SALDO BANK, BIAYA, dua tab fee dan KET PENGIRIMAN dibandingkan untuk tab, alamat absolut, nilai, deskripsi, Note, bank dan identitas transaksi. Satu DOC DEPO dan dua DOC QRIS berjalan lewat transport sumber V4 serta tujuan lebar baru sampai SUCCESS dan rekonsiliasi zero. DEPO sebelum QRIS, prioritas bank, fee bertanda/newline, ownership slot dan overflow tetap diuji. Parser sumber, day discovery/carry-forward, error/missing/duplicate date dan Referensi 18 Oktober tetap lulus tanpa perubahan kode sumber.
 
-Seluruh cakupan V3 tetap dijalankan: account/WEB/date matching, DEPO J/K/L dan QRIS I/J/K, signed biaya, fee/newline asli, Note QRIS, DEPO sebelum QRIS, priority BCA→MANDIRI→BRI→BNI, slot overflow, formula/merge/manual-note conflict, ownership, idempotency, selective retry/resync, read-back, laporan read-only, exact zero per-WEB/konsolidasi dan Clear. Rincian V3 diarsipkan dalam [TEST_REPORT_V3.md](TEST_REPORT_V3.md).
+## Tujuan lebar dan mapping
 
-## Resource dan pemulihan
+- Alokasi 1.000 × 1.000 dan 1.000 × 1.500 tidak ditolak; pemindaian hingga 1.800 kolom, 40+ blok dan marker dekat ujung diuji dengan fixture lazy, tanpa daftar sel untuk alokasi penuh.
+- Row 74/column 1421 tetap **BBR75**. Situs tetangga dengan account mirip, boundary website tidak terdaftar, duplicate marker, tanggal hilang/duplikat/numeric, dan merged header lintas batas chunk diuji.
+- Reader V4 lama diekstrak sebagai oracle offline. Mapping, struktur/signature dan kedua layout kiriman (calendar-date dan monthly side-total) dibandingkan langsung pada fixture identik.
+- Request memakai rentang eksplisit dan sheetId sesuai. Byte cap tetap, batch over-cap dipecah bounded, merge metadata global difilter ke sheet tepat, struktur terlalu besar dan cancel gagal/berhenti secara akurat.
 
-Tes memastikan discovery values-only bounded, metadata format sel tunggal, konteks tab dipakai bersama, serta kegagalan dicache tanpa traceback respons besar. Band tujuan mempertahankan setiap nilai, formula, Note, warna dan merge. Respons terlalu besar diputus saat streaming dan ditutup; body parsial dilepas. Disconnect body menggunakan retry terbatas. `Accept-Encoding: identity` menghindari buffer dekompresi besar sebelum byte cap. Log privat 0600 diuji dengan rotasi 5 MiB dan tiga backup; tidak ada metrik UI.
+## Proteksi tulis dan laporan
 
-Di bawah RLIMIT_AS 1536 MiB, histori 4.000→40.000 baris mempertahankan peak probe sumber sekitar **45 MiB** dan konteks tiga baris untuk hari kosong. Run lengkap tiga tab sumber mencapai sekitar **129 MiB**, SUCCESS dengan 22 output sesuai acuan. Angka/durasi/calls lengkap tersedia di [PERFORMANCE_V4.json](PERFORMANCE_V4.json) dan [PERFORMANCE_WEBSITE_V4.json](PERFORMANCE_WEBSITE_V4.json). Ini benchmark offline tanpa jaringan/throttle Google, bukan ukuran worker produksi.
+Sel target diambil eksplisit untuk nilai/formula/Note; tidak ada asumsi blank akibat sparse index. Konflik manual value, Note, formula, merge, ownership, PREPARED uncertain source dan VERIFIED retry diuji. Perubahan header/merge/target antara planning dan pre-write terdeteksi. Formula jauh di luar website aktif yang berubah sesudah POST menggagalkan verifikasi global. Read-back nilai/Note mismatch menyisakan intent yang tepat untuk recovery; Stop setelah POST tetap menyelesaikan verifikasi sebelum cancellation berlaku kembali.
 
-Tes interruption setelah POST fixture diterima menyisakan PREPARED. Dua recovery/start berikutnya tidak membaca/menulis ulang; retry admin memeriksa tujuan lalu menyelesaikan verifikasi. Run/batch terputus menjadi FAILED/PARTIAL dan hasil sukses disimpan. CANCEL_REQUESTED diselesaikan CANCELED. Stop saat POST sudah dikirim tetap menyelesaikan read-back; retry tidak mengulang item sukses. CLI prepare-v4-upgrade mempertahankan akun/history/intents dan mencatat audit setelah pemeliharaan.
+`Laporan deposit harian` tetap read-only. Marker horizontal/vertikal, tabel tersebar lebar, website associations, date, BALANCE hilang/duplikat dan stable exact zero melalui fresh reads diuji. Rekonsiliasi per-WEB/konsolidasi dan syarat Clear lama tetap lulus. Tidak ada POST tulis laporan atau formula yang dipaksa nol.
 
-## Batas bukti dan target pending
+Direktori/file indeks temporer 0700/0600, cleanup sukses/error/cancel, cache count/byte serta batas memori proses diuji. Reader produksi tidak mempunyai `rows`; ordinary transaction payload dibuang setelah chunk. Global formula/struktur tetap diperiksa.
 
-Jumlah request total meningkat karena chunk. Discovery masih menelusuri nilai global demi keunikan separator V3; larangan literal membaca semua nilai histori belum terpenuhi pada tahap discovery. Pembatasan kolom marker lebih agresif dihentikan karena dapat mengubah aturan tanggal. Lihat [PERFORMANCE_V4.md](PERFORMANCE_V4.md) dan [SCOPE_V4.md](SCOPE_V4.md); tidak ada klaim semua target sudah dipenuhi.
+## Benchmark dan batas bukti
 
-Belum diuji live: workbook referensi Run #5, seluruh 43 item website, Notes/warna/merge/formula aktual, quota/latensi, RSS cgroup worker pada VPS, instalasi systemd/rollback serta cache domain. Tujuan fixture kecil; memori semua ukuran tujuan produksi belum terbukti. Skrip upgrade diperiksa syntax/diff, belum dijalankan pada VPS pengguna. Tidak ada klaim OOM produksi definitif hilang.
+Probe sparse 1.000 × 1.500: 83 GET + 1 POST, peak proses **128,47 MiB**, target BBR75 VERIFIED. Versi seluruh blank terformat: peak **172,79 MiB**, respons terbesar 4.431.506 B, total 23,55 detik offline. Run penuh tiga tab sumber/22 output: peak **129,41 MiB**, SUCCESS, 1.319 request gabungan. Peak mencakup harness, bukan reader saja. RLIMIT_AS berbeda dari systemd MemoryMax. Rincian fase, instrumen, biaya global scan dan data mentah ada di [PERFORMANCE_V41.md](PERFORMANCE_V41.md).
 
-Ikuti [UPGRADE_V4.md](UPGRADE_V4.md): backup, tahan antrean lama, API dimulai tetapi worker tetap berhenti, probe sumber baca saja, PREVIEW penuh, tinjau intent, lalu operator secara eksplisit mengizinkan penulisan. Daftar perubahan ada di [RELEASE_NOTES_V4.md](RELEASE_NOTES_V4.md).
+Belum diuji live: workbook VELBETT/Run #7, FATMAWATI L24, seluruh 43 item aktual, respons/merge/Notes aktual Google, quota/latensi, RAM cgroup 1,5 GiB pada VPS, upgrade dan rollback systemd. Skrip upgrade diperiksa lokal; tidak ada klaim OOM produksi pasti hilang. Banyak request global dapat membuat run memerlukan puluhan menit pada throttle V4.
 
-Reproduksi:
+Upgrade membackup sebelum menahan antrean lama dan **tidak menjalankan ulang Run #7**. API dimulai, worker tetap berhenti. Ikuti [UPGRADE_V41.md](UPGRADE_V41.md) untuk pemeriksaan intent, PREVIEW baca saja, izin tulis operator dan rollback. Daftar file/fungsi di [RELEASE_NOTES_V41.md](RELEASE_NOTES_V41.md), gate di [SCOPE_V41.md](SCOPE_V41.md), laporan V4 di [TEST_REPORT_V4.md](TEST_REPORT_V4.md).
+
+## Reproduksi
 
 ```bash
 .venv/bin/pytest backend/tests -q
 (cd backend && ../.venv/bin/alembic check)
 npm --prefix frontend run build
 PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium bash scripts/e2e.sh
-.venv/bin/python backend/tests/performance/measure_source.py --history 40000 --limit-mib 1536
-.venv/bin/python backend/tests/performance/measure_website.py --history 40000
-bash -n deploy/*.sh scripts/*.sh
+.venv/bin/python backend/tests/performance/measure_destination.py --width 1500 --formatted-blanks
+.venv/bin/python backend/tests/performance/measure_v41_website.py --history 4000
+bash -n deploy/upgrade.sh deploy/rollback.sh
 python3 scripts/package.py
 ```

@@ -1,0 +1,22 @@
+{
+  "historical_rows_per_tab": 4000,
+  "source_tabs": 3,
+  "source_api_calls": 84,
+  "destination_api_calls": 1235,
+  "destination_get_calls": 1219,
+  "destination_post_calls": 16,
+  "cell_writes": 22,
+  "source_read_ms": 216.44,
+  "overall_processing_ms": 884.42,
+  "largest_response_bytes": 22409,
+  "rss_mb": 129.41,
+  "peak_rss_mb": 129.41,
+  "resource_peak_rss_mb": 128.96,
+  "status": "SUCCESS",
+  "golden_values_coordinates_notes_banks_match": true,
+  "oom": false,
+  "address_space_limit_mib": 1536,
+  "destination_allocated_rows": 1000,
+  "destination_allocated_columns": 1500,
+  "network": "offline fixture; no Google/throttle/latency"
+}
