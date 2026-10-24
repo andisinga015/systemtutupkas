@@ -1,0 +1,747 @@
+{
+  "version": "V4.2.1",
+  "selected_date": "2026-10-18",
+  "financial_plans": 43,
+  "source_snapshots": 8,
+  "batch": true,
+  "version_token": false,
+  "heavy_formatted_biaya": true,
+  "destination_phases": {
+    "planning": {
+      "get": 12,
+      "post": 0,
+      "bytes": 5897,
+      "largest_response_bytes": 1074
+    },
+    "pre_write_validation": {
+      "get": 43,
+      "post": 0,
+      "bytes": 90945,
+      "largest_response_bytes": 51843
+    },
+    "writing": {
+      "get": 0,
+      "post": 7,
+      "bytes": 319,
+      "largest_response_bytes": 117
+    },
+    "readback_verification": {
+      "get": 35,
+      "post": 0,
+      "bytes": 103367,
+      "largest_response_bytes": 51843
+    },
+    "reconciliation": {
+      "get": 24,
+      "post": 0,
+      "bytes": 21378,
+      "largest_response_bytes": 3460
+    }
+  },
+  "global_scans": {
+    "pre_write_validation:TOTAL DEPO": 1,
+    "readback_verification:TOTAL DEPO": 1,
+    "pre_write_validation:TOTAL WD": 1,
+    "readback_verification:TOTAL WD": 1,
+    "pre_write_validation:SALDO BANK": 1,
+    "readback_verification:SALDO BANK": 1,
+    "pre_write_validation:KET PENGIRIMAN": 1,
+    "readback_verification:KET PENGIRIMAN": 1,
+    "pre_write_validation:BIAYA": 1,
+    "readback_verification:BIAYA": 1,
+    "pre_write_validation:Pengeluaran FEE QRIS WD": 1,
+    "readback_verification:Pengeluaran FEE QRIS WD": 1,
+    "pre_write_validation:Pengeluaran FEE QRIS DEPO": 1,
+    "readback_verification:Pengeluaran FEE QRIS DEPO": 1,
+    "reconciliation:Laporan deposit harian": 4
+  },
+  "destination_gets": 114,
+  "destination_posts": 7,
+  "destination_response_bytes": 221906,
+  "multi_megabyte_gets": 0,
+  "expense_total_value": 33000,
+  "absolute_output": [
+    [
+      "TOTAL DEPO",
+      "C3",
+      0,
+      "",
+      "",
+      ""
+    ],
+    [
+      "TOTAL DEPO",
+      "D3",
+      0,
+      "",
+      "",
+      ""
+    ],
+    [
+      "TOTAL DEPO",
+      "E3",
+      0,
+      "",
+      "",
+      ""
+    ],
+    [
+      "TOTAL DEPO",
+      "F3",
+      0,
+      "",
+      "",
+      ""
+    ],
+    [
+      "TOTAL DEPO",
+      "G3",
+      0,
+      "",
+      "",
+      ""
+    ],
+    [
+      "TOTAL DEPO",
+      "B3",
+      0,
+      "",
+      "",
+      ""
+    ],
+    [
+      "TOTAL DEPO",
+      "H3",
+      75342988,
+      "",
+      "",
+      ""
+    ],
+    [
+      "TOTAL DEPO",
+      "I3",
+      75342988,
+      "",
+      "",
+      ""
+    ],
+    [
+      "TOTAL WD",
+      "C3",
+      9399000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "TOTAL WD",
+      "D3",
+      9399000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "TOTAL WD",
+      "E3",
+      9399000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "TOTAL WD",
+      "F3",
+      9399000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "TOTAL WD",
+      "G3",
+      9399000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "TOTAL WD",
+      "B3",
+      9399000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "TOTAL WD",
+      "H3",
+      59804000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "TOTAL WD",
+      "I3",
+      59804000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "SALDO BANK",
+      "C3",
+      2355000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "SALDO BANK",
+      "D3",
+      2355000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "SALDO BANK",
+      "E3",
+      2355000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "SALDO BANK",
+      "F3",
+      2355000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "SALDO BANK",
+      "G3",
+      2355000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "SALDO BANK",
+      "B3",
+      2355000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "SALDO BANK",
+      "H3",
+      449057834,
+      "",
+      "",
+      ""
+    ],
+    [
+      "SALDO BANK",
+      "I3",
+      449057834,
+      "",
+      "",
+      ""
+    ],
+    [
+      "KET PENGIRIMAN",
+      "A4",
+      "PENGIRIMAN DARI KAS BESAR BCA",
+      "",
+      "BCA",
+      "4c7d1d30f1f9a252e4fec8613b8580f4eb52764784139af52b32237778422edc"
+    ],
+    [
+      "KET PENGIRIMAN",
+      "B4",
+      10000000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "KET PENGIRIMAN",
+      "A5",
+      "KIRIM KE NL KAS BCA",
+      "",
+      "BCA",
+      "6e95a17081e5b316973e0904c0d13771dbeb47a4dc02e34314ae19159d01317d"
+    ],
+    [
+      "KET PENGIRIMAN",
+      "B5",
+      -1741000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "KET PENGIRIMAN",
+      "A6",
+      "PENGIRIMAN DARI KAS BESAR BCA",
+      "",
+      "BCA",
+      "df112fef3b4c87619853b795753ceafcbbb011ca3893c8a6b7a6ebedd3b78c0a"
+    ],
+    [
+      "KET PENGIRIMAN",
+      "B6",
+      10000000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "KET PENGIRIMAN",
+      "A7",
+      "KIRIM KE NL KAS BCA",
+      "",
+      "BCA",
+      "c463e4854ba84fee3561b1629871aeb6dac93b1b1e16cece14d43628ef9511e2"
+    ],
+    [
+      "KET PENGIRIMAN",
+      "B7",
+      -1741000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "KET PENGIRIMAN",
+      "A8",
+      "PENGIRIMAN DARI KAS BESAR BCA",
+      "",
+      "BCA",
+      "55d364a1258a22c101bee5e9cf3f90791c2081e41c844a000ced4f79e1f192b3"
+    ],
+    [
+      "KET PENGIRIMAN",
+      "B8",
+      10000000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "KET PENGIRIMAN",
+      "A9",
+      "KIRIM KE NL KAS BCA",
+      "",
+      "BCA",
+      "b9efa2ea7d8681636e7b105455113074937c76788323633b9e3afd258270c866"
+    ],
+    [
+      "KET PENGIRIMAN",
+      "B9",
+      -1741000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "KET PENGIRIMAN",
+      "A10",
+      "PENGIRIMAN DARI KAS BESAR BCA",
+      "",
+      "BCA",
+      "d78a47403b97e190a09adf4b6096742518ceee41a7fcb73d04fb601c39ab8e40"
+    ],
+    [
+      "KET PENGIRIMAN",
+      "B10",
+      10000000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "KET PENGIRIMAN",
+      "A11",
+      "KIRIM KE NL KAS BCA",
+      "",
+      "BCA",
+      "1a3c5aeb048c3f8dedd8823cacd4022cb031d637d223d324cd86d712a8063459"
+    ],
+    [
+      "KET PENGIRIMAN",
+      "B11",
+      -1741000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "KET PENGIRIMAN",
+      "A12",
+      "PENGIRIMAN DARI KAS BESAR BCA",
+      "",
+      "BCA",
+      "1599c0f272468890cad955b627e587486b49181f0a85f4192a564a61d8492826"
+    ],
+    [
+      "KET PENGIRIMAN",
+      "B12",
+      10000000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "KET PENGIRIMAN",
+      "A13",
+      "KIRIM KE NL KAS BCA",
+      "",
+      "BCA",
+      "d95f32bbe91944051a9683dc2c3ae35d6cc30dcbca1df64a84265d38abc553b5"
+    ],
+    [
+      "KET PENGIRIMAN",
+      "B13",
+      -1741000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "KET PENGIRIMAN",
+      "A14",
+      "PENGIRIMAN DARI KAS BESAR BCA",
+      "",
+      "BCA",
+      "3c34aff2ff20b14d0eb11ce13c5c603551d49aab65f32f47af136481b9d7db84"
+    ],
+    [
+      "KET PENGIRIMAN",
+      "B14",
+      10000000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "KET PENGIRIMAN",
+      "A15",
+      "KIRIM KE NL KAS BCA",
+      "",
+      "BCA",
+      "40bc5d4da1ad965af44dc1f16fa221fa9e8886f72d3cb5798d3c812792a90cb0"
+    ],
+    [
+      "KET PENGIRIMAN",
+      "B15",
+      -1741000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "KET PENGIRIMAN",
+      "A16",
+      "KIRIM KE KAS BESAR BRI",
+      "QRIS E-POWER ( KIRIM KE KAS BESAR BRI ) -1.000.000",
+      "BCA",
+      "381b21309122a3aeabf460d69024597143a07e7ca4c6113fb9e0e01c910cb700"
+    ],
+    [
+      "KET PENGIRIMAN",
+      "B16",
+      -1000000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "BIAYA",
+      "D3",
+      492000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "BIAYA",
+      "C3",
+      5000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "BIAYA",
+      "B3",
+      33000,
+      "",
+      "",
+      ""
+    ],
+    [
+      "Pengeluaran FEE QRIS WD",
+      "B3",
+      "FEE WD AUTO",
+      "",
+      "",
+      ""
+    ],
+    [
+      "Pengeluaran FEE QRIS WD",
+      "C3",
+      732340,
+      "",
+      "",
+      ""
+    ],
+    [
+      "Pengeluaran FEE QRIS DEPO",
+      "B3",
+      "FEE QRIS PERIODE 14 - 15 october 2026",
+      "",
+      "",
+      ""
+    ],
+    [
+      "Pengeluaran FEE QRIS DEPO",
+      "C3",
+      621134,
+      "",
+      "",
+      ""
+    ]
+  ],
+  "output_fingerprint": "1c00163932304c43f583e477b5625e50ffa823b8faba7f626bb22a1dad3b465e",
+  "item_statuses": [
+    [
+      "WD BCA / ACCOUNT 2",
+      "deposit",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA / ACCOUNT 2",
+      "withdrawal",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA / ACCOUNT 2",
+      "balance",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA / ACCOUNT 2",
+      "transfers",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA / ACCOUNT 2",
+      "expense_input",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA / ACCOUNT 3",
+      "deposit",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA / ACCOUNT 3",
+      "withdrawal",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA / ACCOUNT 3",
+      "balance",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA / ACCOUNT 3",
+      "transfers",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA / ACCOUNT 3",
+      "expense_input",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA / ACCOUNT 4",
+      "deposit",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA / ACCOUNT 4",
+      "withdrawal",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA / ACCOUNT 4",
+      "balance",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA / ACCOUNT 4",
+      "transfers",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA / ACCOUNT 4",
+      "expense_input",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA / ACCOUNT 5",
+      "deposit",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA / ACCOUNT 5",
+      "withdrawal",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA / ACCOUNT 5",
+      "balance",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA / ACCOUNT 5",
+      "transfers",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA / ACCOUNT 5",
+      "expense_input",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA / ACCOUNT 6",
+      "deposit",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA / ACCOUNT 6",
+      "withdrawal",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA / ACCOUNT 6",
+      "balance",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA / ACCOUNT 6",
+      "transfers",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA / ACCOUNT 6",
+      "expense_input",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA 1 TOKEN / IVAN RAKHMANDA ( PP )",
+      "deposit",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA 1 TOKEN / IVAN RAKHMANDA ( PP )",
+      "withdrawal",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA 1 TOKEN / IVAN RAKHMANDA ( PP )",
+      "balance",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA 1 TOKEN / IVAN RAKHMANDA ( PP )",
+      "transfers",
+      "SUCCESS"
+    ],
+    [
+      "WD BCA 1 TOKEN / IVAN RAKHMANDA ( PP )",
+      "expense_input",
+      "SUCCESS"
+    ],
+    [
+      "QRIS E-POWER",
+      "deposit",
+      "SUCCESS"
+    ],
+    [
+      "QRIS E-POWER",
+      "withdrawal",
+      "SUCCESS"
+    ],
+    [
+      "QRIS E-POWER",
+      "balance",
+      "SUCCESS"
+    ],
+    [
+      "QRIS E-POWER",
+      "transfers",
+      "SUCCESS"
+    ],
+    [
+      "QRIS E-POWER",
+      "qris_expense",
+      "SUCCESS"
+    ],
+    [
+      "QRIS E-POWER",
+      "qris_fee",
+      "SUCCESS"
+    ],
+    [
+      "QRIS QRIZZ",
+      "deposit",
+      "SUCCESS"
+    ],
+    [
+      "QRIS QRIZZ",
+      "withdrawal",
+      "SUCCESS"
+    ],
+    [
+      "QRIS QRIZZ",
+      "balance",
+      "SUCCESS"
+    ],
+    [
+      "QRIS QRIZZ",
+      "transfers",
+      "SUCCESS"
+    ],
+    [
+      "QRIS QRIZZ",
+      "qris_expense",
+      "SUCCESS"
+    ],
+    [
+      "QRIS QRIZZ",
+      "qris_fee",
+      "SUCCESS"
+    ],
+    [
+      "Semua DOC DEPO",
+      "expense_total",
+      "SUCCESS"
+    ]
+  ],
+  "wall_clock_ms": 1275.149,
+  "status": "SUCCESS",
+  "oom": false,
+  "address_space_limit_mib": 1536,
+  "rss_mb": 149.7,
+  "peak_rss_mb": 152.09,
+  "resource_peak_rss_mb": 152.09,
+  "network": "isolated equivalent fixture, no Google latency/quota waiting; live acceptance pending"
+}
