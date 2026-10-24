@@ -1,61 +1,57 @@
-# Laporan pengujian V4.1 — 23 Oktober 2026
+# Laporan pengujian V4.2 — 24 Oktober 2026
 
-V4.1 mengganti akses tujuan dan laporan yang padat menjadi reader terbatas dengan indeks struktur temporer. Pengujian memakai fixture terisolasi; pengembang belum mengakses key Google atau SSH VPS pengguna.
+**283 passed pada Python 3.12.14 (174,80 detik) dan 283 passed pada Python 3.10.22 (215,55 detik).** Satu warning Starlette/httpx deprecation pada kedua versi; dependensi terkunci tidak diubah. Seluruh **198 kasus V4.1 dipertahankan**, dengan 85 kasus tambahan. Tidak ada test gagal yang dihapus.
 
-| Pemeriksaan | Hasil aktual |
+## Hasil verifikasi
+
+| Pemeriksaan | Hasil |
 |---|---|
-| Backend Python 3.12.14 | **198 passed**, 76,76 detik |
-| Backend Python 3.10.22 | **198 passed**, 88,61 detik |
-| Chromium Playwright dengan API sebenarnya | **5 passed**, 34,6 detik |
-| TypeScript strict / Vite build | Berhasil |
-| Frontend sources dan seluruh 59 public assets | Identik byte dengan ZIP V4 |
-| Source reader/parser, auth/API, models, workflow, worker, operations, batches, job control, diagnostics | Identik byte dengan ZIP V4 |
-| Transport request/auth/source/write | AST fungsi identik V4; hanya jalur grid tujuan diganti |
-| Alembic check/current | Tidak ada operasi baru; `b7c31ef05a92 (head)` |
-| Maintenance V3/V4/V4.1 pada populated DB fixture | Akun/history/intents/ownership dipertahankan, penahanan antrean diaudit |
-| Python/Bash syntax dan diff terhadap ZIP V4 | Lulus |
-| Probe sparse/terformat dan satu website lengkap | Tanpa OOM di RLIMIT_AS 1536 MiB |
+| Backend full suite Python 3.12 | 283 passed |
+| Backend full suite Python 3.10 | 283 passed |
+| TypeScript strict + Vite build | Lulus, frontend prebuilt disertakan |
+| Chromium Playwright | 8 passed, 26,7 detik |
+| Alembic current/check | c92448ce233b (head); no new upgrade operations |
+| Shell syntax upgrade/rollback/install/e2e | Lulus |
+| Migrasi populated V1/V2/V4.1 → V4.2 | Data lama/integritas/FK dipertahankan |
+| Downgrade kosong / rollback backup | Lulus; downgrade tabel V4.2 berisi data ditolak |
+| Large-source/wide/preformatted memory tests lama | Lulus dalam full suite |
+| Fixture website VELBETT 18 Oktober | 22 nilai/koordinat/Notes/bank cocok golden |
+| Live Google/VPS pengguna | **Pending; tidak ada akses/penulisan asli** |
 
-Tidak ada tes backend gagal, skipped atau xfailed pada kedua full-suite run. Satu `StarletteDeprecationWarning` mengenai httpx TestClient muncul; dependensi tidak diganti untuk patch ini. Lima tes browser mencakup autentikasi, konfigurasi, dashboard, riwayat, tanggal individual/batch dan cancel. UI tidak diubah, termasuk footer v3.0.
+Browser mempertahankan lima kasus lama: admin/login, persistensi setting/periode, Help Center, sidebar desktop/zoom/mobile dan enqueue/cancel nyata. Tiga kasus baru menguji retry item ketika Run aktif serta kedua mode keputusan konflik/Preview. Google di kasus baru browser memakai mock kontrak UI secara eksplisit; server source/mapping/decision/readback diuji oleh backend dengan wire fixture. Uji API restart benar-benar menjalankan dua generasi proses uvicorn, mempertahankan sesi login dan retry QUEUED yang sama di SQLite. Uji worker subprocess mempertahankan flock dan menolak worker kedua.
 
-## Regresi yang dipertahankan
+## Cakupan tambahan
 
-Seluruh 163 kasus V4 tetap dijalankan. Satu kasus tujuan yang dahulu mengharapkan guard berdasarkan alokasi diganti dengan pembacaan bounded yang berhasil; assertion guard sumber tidak dihapus. Tambahan 34 kasus reader V4.1 dan satu kasus CLI V4.1 menghasilkan 198 kasus total.
+- Satu snapshot lengkap bersama, fixed columns, checksum/completeness, indeks forward/backward, invalidasi edit/insert/append, missing/duplicate, fallback tanpa token, tab inactive/rename/recreated, alias aktif setelah rename dan kepemilikan lama tanpa duplikasi.
+- Registry bulanan seluruh lebar, target absolut terpin, struktur/identity/merge/header/date yang berubah ditolak, source rename tidak mengubah target, revalidation mempertahankan histori/ledger.
+- Retry satu item di antara 42 item tambahan yang sudah sukses; raw sumber baru, current URL/alias/explicit-tab override hanya untuk item tersebut, prioritas saat membaca/menulis/menjelang selesai, klik ganda/claim/restart/cancel, stale BIAYA total tanpa auto-replay.
+- Actual old/new, source provenance, kelompok fee/transfer, NEW/KEEP, stale approval, CSRF/idempotency, formula/Notes, Preview zero financial writes, KEEP tidak mengakui ledger PREPARED asing/Preview, seluruh kelompok tetap unresolved bila readback gagal.
+- Header fee di bawah dua baris awal dan merged origin, batas website, beberapa fee, no-op source tanpa fee, konflik no-fee vs data lama, clear hanya robot-owned, transfer berubah/hilang/restored pada slot lama, legacy proof administratif.
+- Worker mati setelah accepted POST pada angka/fee/transfer: intent tersimpan dan sel yang sama tidak dikirim ulang; global formula berubah saat PREPARED tetap ditolak. Tidak ada finalisasi palsu KLOP.
 
-Golden 22 output V3/V4 tidak diganti: TOTAL DEPO, TOTAL WD, SALDO BANK, BIAYA, dua tab fee dan KET PENGIRIMAN dibandingkan untuk tab, alamat absolut, nilai, deskripsi, Note, bank dan identitas transaksi. Satu DOC DEPO dan dua DOC QRIS berjalan lewat transport sumber V4 serta tujuan lebar baru sampai SUCCESS dan rekonsiliasi zero. DEPO sebelum QRIS, prioritas bank, fee bertanda/newline, ownership slot dan overflow tetap diuji. Parser sumber, day discovery/carry-forward, error/missing/duplicate date dan Referensi 18 Oktober tetap lulus tanpa perubahan kode sumber.
+Pemetaan setiap nomor pada 80 persyaratan §21 terdapat dalam [COVERAGE_V42.md](COVERAGE_V42.md). Fixture golden asli, parser finansial, source reader dasar, stylesheet/navigation dan tiga migrasi sebelumnya dibandingkan byte-for-byte terhadap ZIP V4.1.
 
-## Tujuan lebar dan mapping
+## Penyesuaian test lama yang memang mengikuti perilaku V4.2
 
-- Alokasi 1.000 × 1.000 dan 1.000 × 1.500 tidak ditolak; pemindaian hingga 1.800 kolom, 40+ blok dan marker dekat ujung diuji dengan fixture lazy, tanpa daftar sel untuk alokasi penuh.
-- Row 74/column 1421 tetap **BBR75**. Situs tetangga dengan account mirip, boundary website tidak terdaftar, duplicate marker, tanggal hilang/duplikat/numeric, dan merged header lintas batas chunk diuji.
-- Reader V4 lama diekstrak sebagai oracle offline. Mapping, struktur/signature dan kedua layout kiriman (calendar-date dan monthly side-total) dibandingkan langsung pada fixture identik.
-- Request memakai rentang eksplisit dan sheetId sesuai. Byte cap tetap, batch over-cap dipecah bounded, merge metadata global difilter ke sheet tepat, struktur terlalu besar dan cancel gagal/berhenti secara akurat.
+Kasus tidak dihapus atau dilemahkan:
 
-## Proteksi tulis dan laporan
+- Lost reply POST yang hasilnya langsung terbukti kini SUCCESS tanpa POST ulang; untuk kasus uncertain PREPARED, fixture juga membuat pembacaan verifikasi tidak tersedia. Keduanya diuji terpisah.
+- POST HTTP 503 kini berhenti setelah satu percobaan dan meminta readback; assertion lama yang mengharuskan POST kedua diganti dengan bukti tidak replay.
+- Run identik berikutnya tetap mempunyai 22 rencana golden tetapi mengirim 0 POST bila semua sel sudah cocok dengan ledger terverifikasi.
+- Resync ke workbook sumber berbeda tidak dianggap bukti identitas lama; test mengharuskan konflik kiriman dan keputusan NEW eksplisit, lalu membuktikan jumlah ownership/slot tidak bertambah.
+- Fixture yang sengaja mengubah tanggal/layout tujuan sesudah konfigurasi kini mengotorisasi registry baru terlebih dahulu; normal Crawl/Retry tidak diberi remapping otomatis. Fake sheetIds dibuat konsisten dengan metadata aslinya.
+- Lock test diisolasi per direktori sementara agar dua versi Python/subprocess tidak berbagi lock produksi.
 
-Sel target diambil eksplisit untuk nilai/formula/Note; tidak ada asumsi blank akibat sparse index. Konflik manual value, Note, formula, merge, ownership, PREPARED uncertain source dan VERIFIED retry diuji. Perubahan header/merge/target antara planning dan pre-write terdeteksi. Formula jauh di luar website aktif yang berubah sesudah POST menggagalkan verifikasi global. Read-back nilai/Note mismatch menyisakan intent yang tepat untuk recovery; Stop setelah POST tetap menyelesaikan verifikasi sebelum cancellation berlaku kembali.
+## Performa dan batas produksi
 
-`Laporan deposit harian` tetap read-only. Marker horizontal/vertikal, tabel tersebar lebar, website associations, date, BALANCE hilang/duplikat dan stable exact zero melalui fresh reads diuji. Rekonsiliasi per-WEB/konsolidasi dan syarat Clear lama tetap lulus. Tidak ada POST tulis laporan atau formula yang dipaksa nol.
+Benchmark memakai sumber lazy masing-masing 40.000 baris, delapan tab tujuan alokasi 1.000 × 1.500, RLIMIT_AS 1536 MiB. Peak RSS sekitar 133 MiB; respons processing terbesar 44.266 byte. Cold mapping 218 GET; processing awal 1.381 GET + 16 POST; steady warm Preview 49 GET + 0 POST; retry satu item 28 GET + 0 POST. Semua angka offline tanpa pacing/latensi Google. Detail per tahap, fallback tanpa token serta JSON lengkap ada di [PERFORMANCE_V42.md](PERFORMANCE_V42.md).
 
-Direktori/file indeks temporer 0700/0600, cleanup sukses/error/cancel, cache count/byte serta batas memori proses diuji. Reader produksi tidak mempunyai `rows`; ordinary transaction payload dibuang setelah chunk. Global formula/struktur tetap diperiksa.
+Cold proof/write masih mahal. Target Preview live <60 detik belum terbukti; 49 request dengan pacing 1,2 detik saja sudah sekitar 57,6 detik. Tanpa token versi, Preview dan retry lebih lambat. Cold discovery tetap melakukan values-only scan bounded sepanjang histori untuk membuktikan tanggal unik; tidak ada full historical grid materialization. Tidak ada klaim dapat melewati histori secara aman tanpa bukti.
 
-## Benchmark dan batas bukti
+Sheets tidak menyediakan transaksi compare-and-set lintas pembacaan dan batchUpdate. Sistem memeriksa kembali anchor/nilai/versi/approval sebelum POST, tetapi tidak menjamin kebal terhadap editor eksternal yang mengubah sel pada celah GET→POST. Tinjau penerimaan dengan akses edit terkontrol. Histori Google setelah backup tidak di-undo oleh rollback SQLite; cocokkan sel aktual sebelum melanjutkan intent.
 
-Probe sparse 1.000 × 1.500: 83 GET + 1 POST, peak proses **128,47 MiB**, target BBR75 VERIFIED. Versi seluruh blank terformat: peak **172,79 MiB**, respons terbesar 4.431.506 B, total 23,55 detik offline. Run penuh tiga tab sumber/22 output: peak **129,41 MiB**, SUCCESS, 1.319 request gabungan. Peak mencakup harness, bukan reader saja. RLIMIT_AS berbeda dari systemd MemoryMax. Rincian fase, instrumen, biaya global scan dan data mentah ada di [PERFORMANCE_V41.md](PERFORMANCE_V41.md).
+Snapshot maksimum 8 MiB per tab/tanggal dan akumulasi 64 MiB per Run; mencapai batas adalah error eksplisit, bukan izin menghapus audit/intent atau memotong data. Tidak ada cleanup otomatis financial records. Identitas lama tanpa bukti memerlukan konfirmasi administratif; konflik formula/merge/manual Note dapat tetap blocked walaupun admin meminta NEW. Tidak ada penggantian key, kenaikan MemoryMax/HTTP cap, atau klaim deployment VPS sudah dilakukan.
 
-Belum diuji live: workbook VELBETT/Run #7, FATMAWATI L24, seluruh 43 item aktual, respons/merge/Notes aktual Google, quota/latensi, RAM cgroup 1,5 GiB pada VPS, upgrade dan rollback systemd. Skrip upgrade diperiksa lokal; tidak ada klaim OOM produksi pasti hilang. Banyak request global dapat membuat run memerlukan puluhan menit pada throttle V4.
+## Paket
 
-Upgrade membackup sebelum menahan antrean lama dan **tidak menjalankan ulang Run #7**. API dimulai, worker tetap berhenti. Ikuti [UPGRADE_V41.md](UPGRADE_V41.md) untuk pemeriksaan intent, PREVIEW baca saja, izin tulis operator dan rollback. Daftar file/fungsi di [RELEASE_NOTES_V41.md](RELEASE_NOTES_V41.md), gate di [SCOPE_V41.md](SCOPE_V41.md), laporan V4 di [TEST_REPORT_V4.md](TEST_REPORT_V4.md).
-
-## Reproduksi
-
-```bash
-.venv/bin/pytest backend/tests -q
-(cd backend && ../.venv/bin/alembic check)
-npm --prefix frontend run build
-PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium bash scripts/e2e.sh
-.venv/bin/python backend/tests/performance/measure_destination.py --width 1500 --formatted-blanks
-.venv/bin/python backend/tests/performance/measure_v41_website.py --history 4000
-bash -n deploy/upgrade.sh deploy/rollback.sh
-python3 scripts/package.py
-```
+Distribusi memuat source, frontend prebuilt, test, dokumentasi, migrasi additive dan skrip upgrade/rollback. ZIP diperiksa CRC, kelengkapan aset dan pengecualian private key/database/environment/cache. SHA256 disertakan terpisah. Versi final di GitHub diverifikasi lewat fetch baru dan checksum blob yang sama; arsip rilis lama tetap dipertahankan.

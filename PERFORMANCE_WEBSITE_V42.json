@@ -1,0 +1,142 @@
+{
+  "selected_date": "2026-10-18",
+  "history_rows_per_source": 40000,
+  "source_tabs": 3,
+  "allocated_destination": [
+    1000,
+    1500
+  ],
+  "address_space_limit_mib": 1536,
+  "version_tokens": true,
+  "cold_mapping": {
+    "stages_ms": {},
+    "exclusive_ms": {},
+    "api_reads": 218,
+    "api_writes": 0,
+    "api_retries": 0,
+    "response_bytes": 89370,
+    "largest_response_bytes": 3711,
+    "duration_ms": 131.311,
+    "rss_mb": 130.06,
+    "peak_rss_mb": 129.7
+  },
+  "initial_processing": {
+    "stages_ms": {
+      "warm_mapping_lookup": 40.561,
+      "source_date_discovery": 1922.84,
+      "source_reading": 1997.706,
+      "destination_validation": 459.763,
+      "actual_write": 0.856,
+      "readback_verification": 270.364,
+      "write_and_readback": 287.407,
+      "reconciliation": 25.545,
+      "financial_calculation_and_coordinator": 2819.365
+    },
+    "exclusive_ms": {
+      "warm_mapping_lookup": 40.561,
+      "source_date_discovery": 1922.84,
+      "source_reading": 74.866,
+      "destination_validation": 459.763,
+      "actual_write": 0.856,
+      "readback_verification": 34.609,
+      "write_and_readback": 16.188,
+      "reconciliation": 6.825,
+      "financial_calculation_and_coordinator": 262.86
+    },
+    "api_reads": 1381,
+    "api_writes": 16,
+    "api_retries": 0,
+    "response_bytes": 12483572,
+    "largest_response_bytes": 44266,
+    "duration_ms": 2819.514,
+    "rss_mb": 132.55,
+    "peak_rss_mb": 132.32
+  },
+  "first_preview_after_writes": {
+    "stages_ms": {
+      "warm_mapping_lookup": 45.947,
+      "source_date_discovery": 2.028,
+      "source_reading": 86.345,
+      "destination_validation": 78.241,
+      "financial_calculation_and_coordinator": 345.211
+    },
+    "exclusive_ms": {
+      "warm_mapping_lookup": 45.947,
+      "source_date_discovery": 2.028,
+      "source_reading": 84.318,
+      "destination_validation": 78.241,
+      "financial_calculation_and_coordinator": 134.681
+    },
+    "api_reads": 211,
+    "api_writes": 0,
+    "api_retries": 0,
+    "response_bytes": 87039,
+    "largest_response_bytes": 3376,
+    "duration_ms": 345.757,
+    "rss_mb": 132.73,
+    "peak_rss_mb": 132.45
+  },
+  "warm_preview": {
+    "stages_ms": {
+      "warm_mapping_lookup": 35.793,
+      "source_date_discovery": 1.863,
+      "source_reading": 75.362,
+      "destination_validation": 18.404,
+      "financial_calculation_and_coordinator": 266.992
+    },
+    "exclusive_ms": {
+      "warm_mapping_lookup": 35.793,
+      "source_date_discovery": 1.863,
+      "source_reading": 73.498,
+      "destination_validation": 18.404,
+      "financial_calculation_and_coordinator": 137.43
+    },
+    "api_reads": 49,
+    "api_writes": 0,
+    "api_retries": 0,
+    "response_bytes": 21253,
+    "largest_response_bytes": 1389,
+    "duration_ms": 267.145,
+    "rss_mb": 132.75,
+    "peak_rss_mb": 132.45
+  },
+  "one_item_retry": {
+    "stages_ms": {
+      "warm_mapping_lookup": 29.202,
+      "source_date_discovery": 0.874,
+      "source_reading": 27.326,
+      "destination_validation": 10.399,
+      "reconciliation": 14.758,
+      "financial_calculation_and_coordinator": 150.712
+    },
+    "exclusive_ms": {
+      "warm_mapping_lookup": 29.202,
+      "source_date_discovery": 0.874,
+      "source_reading": 26.452,
+      "destination_validation": 10.399,
+      "financial_calculation_and_coordinator": 76.761,
+      "reconciliation": 7.024
+    },
+    "api_reads": 28,
+    "api_writes": 0,
+    "api_retries": 0,
+    "response_bytes": 9739,
+    "largest_response_bytes": 1389,
+    "duration_ms": 150.766,
+    "rss_mb": 133.14,
+    "peak_rss_mb": 132.82
+  },
+  "snapshot_source_calls": {
+    "WD BCA 1 TOKEN / IVAN RAKHMANDA ( PP )": 141,
+    "QRIS E-POWER": 134,
+    "QRIS QRIZZ": 131
+  },
+  "golden_values_coordinates_notes_banks_match": true,
+  "other_successful_items_unchanged": true,
+  "retained_snapshots": 10,
+  "oom": false,
+  "rss_mb": 133.16,
+  "peak_rss_mb": 133.16,
+  "resource_peak_rss_mb": 132.82,
+  "network": "safely isolated lazy wire fixture; no Google latency/pacing; live acceptance pending"
+}
