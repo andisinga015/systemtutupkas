@@ -1,0 +1,18 @@
+{
+  "installed_code": "immutable V4.2.1",
+  "before_schema": "c92448ce233b",
+  "target_schema": "d422a61e908f",
+  "pre_migration_recheck_batches": "QUEUED and RUNNING safely canceled/requested",
+  "source_period_absent_before_migration": true,
+  "financial_success_runs_preserved": 2,
+  "stop_runner": "installed application, not staging code",
+  "protected_rows_verifier": {
+    "from_schema": "c92448ce233b",
+    "schema": "d422a61e908f",
+    "tables": 40,
+    "preserved_rows": 21,
+    "legacy_depo_unassigned": 1,
+    "active_runs_held": 0,
+    "financial_state_preserved": true
+  }
+}

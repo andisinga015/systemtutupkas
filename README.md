@@ -1,31 +1,41 @@
-# TUTUP KAS · LION GROUP V4.2.1
+# TUTUP KAS · LION GROUP V4.2.2
 
-Patch destination writer untuk snapshot/rencana dan monthly mapping READY yang sudah ada. Bounded shared validation/readback dan atomic batchUpdate mengurangi GET/POST tanpa mengubah koordinat, angka, deskripsi, Notes, konflik atau ownership V4.2. Fixture 43 item: **660 → 77 GET tujuan, 36 → 1 POST**, output 57 sel persis sama dengan V4.2 asli.
+Tiga dokumen sumber dan pengaturan sheet terpisah untuk setiap WEB/bulan:
+
+| Dokumen | Tanggal |
+|---|---|
+| DOC A — DEPO/WD | 1–15 |
+| DOC B — DEPO/WD | 16–akhir bulan |
+| DOC QRIS | Seluruh bulan |
+
+Run memilih satu DEPO yang sesuai tanggal sebelum membuat snapshot/item, ditambah QRIS bulanan bila berlaku. Tab bernama sama di A/B tetap berbeda identitas. Aktivasi/nonaktivasi, refresh, URL dan revision terisolasi per dokumen. Sheet baru tetap nonaktif; missing periode tidak memakai sumber lain sebagai fallback.
 
 ## Upgrade VPS yang sudah ada
 
-Unduh ZIP lengkap beserta SHA256, unggah ke staging lalu ikuti [UPGRADE_V421.md](UPGRADE_V421.md). Script `deploy/upgrade.sh` mempertahankan schema `c92448ce233b`, membuat backup konsisten, menahan antrean lama, memverifikasi protected rows dan memulai **API saja**. Worker tetap berhenti/disabled sampai pemeriksaan manual. Akun, database, history, READY mappings, ledgers, app.env, key Google, Nginx/HTTPS dan MemoryMax dipertahankan. Jangan memakai install.sh pada instalasi lama.
+Mendukung **V4.2 atau V4.2.1 → V4.2.2**. Ikuti [UPGRADE_V422.md](UPGRADE_V422.md), jangan gunakan install.sh pada instalasi lama.
 
 ```bash
-sha256sum -c tutupkas-lion-group-v4.2.1.zip.sha256
-unzip tutupkas-lion-group-v4.2.1.zip -d /tmp/tutupkas-staging-v421
-cd /tmp/tutupkas-staging-v421/tutupkas-lion-group
+sha256sum -c tutupkas-lion-group-v4.2.2.zip.sha256
+unzip tutupkas-lion-group-v4.2.2.zip -d /tmp/tutupkas-staging-v422
+cd /tmp/tutupkas-staging-v422/tutupkas-lion-group
 sudo bash deploy/upgrade.sh
 ```
 
-Untuk patch ini **tidak perlu registrasi ulang sumber atau rebuild mapping READY**. Tinjau data lama dan intent PREPARED sebelum menjalankan worker. Jika hanya expense_total tertinggal, otorisasi retry item itu saja. Sel lama berbeda tetap memerlukan keputusan admin. Rollback memulihkan release dan database backup bersama; tulisan Google tidak dibatalkan oleh rollback SQLite.
+Skrip mendeteksi release/schema nyata, membuat backup konsisten dan menahan antrean secara diaudit, bermigrasi `c92448ce233b → d422a61e908f`, lalu memverifikasi protected rows dan memulai API saja. **Worker tetap STOPPED/disabled** untuk pemeriksaan manual. Akun/password, SourceDocument IDs/revisions/tab states, snapshots/indexes/history, ledgers/ownership, READY mappings, app.env/key Google, Nginx/HTTPS dan RAM settings dipertahankan.
 
-## Operasi
+DEPO lama berstatus **belum ditetapkan**: buka Admin pada bulan yang benar dan pilih **Tetapkan sebagai DOC A** atau **DOC B** secara eksplisit. Record dan status sheet lama mengikuti penetapan itu tanpa cloning. QRIS lama menjadi bulanan. Tidak ada penebakan dari nama file/tanggal Run lama, tidak ada pengaktifan otomatis, dan tidak ada Crawl otomatis.
 
-- Tab baru/rename perlu ditinjau dan diaktifkan; identitas recreated tidak diadopsi berdasarkan nama.
-- Registry dibangun saat URL disimpan/divalidasi. Crawl/retry memakai koordinat yang dipin, tanpa remapping otomatis.
-- Retry item gagal membaca raw source terkini; perubahan BIAYA input dapat memerlukan retry total terpisah.
-- Konflik menampilkan nilai Google aktual dan hasil sumber. Formula/merge/Note manual tetap dilindungi; KEEP tidak memaksa KLOP.
-- Preview dan Laporan deposit harian hanya baca. Selesai & Clear memerlukan seluruh WEB dan BALANCE konsolidasi sesuai aturan lama.
+Tinjau ketiga pilihan pada menu **Daftar Sheet**. Jika hanya satu item gagal, retry item itu saja dari periode/doc ID yang benar. Mapping Kas Kecil tidak perlu direbuild karena perubahan periode sumber. Histori lama tetap dapat dibaca; konteks sumber yang belum konsisten tidak dianggap current secara otomatis. Rollback harus memulihkan release dan database backup bersama; tulisan Google tidak dibatalkan oleh rollback SQLite.
 
-## Pengembangan dan verifikasi
+## Finansial dan performa
 
-Python 3.10+, Node 20+ dan dependensi yang terkunci:
+Seluruh engine finansial dan destination writer/reader/registry V4.2.1 tetap byte-identik. Fixed columns, fee, BIAYA, KET, Notes/formula/merge/manual guards, explicit NEW/KEEP, ownership/idempotent recovery, read-only report dan true KLOP dipertahankan. Tidak ada concurrency, pacing, cap API atau MemoryMax yang dinaikkan.
+
+Fixture 43 item/8 snapshot/57 sel dengan **10 tab DOC A aktif yang tidak dipilih** tetap memakai **77 destination GET, 1 POST, 117.986 byte**, output persis sama dengan V4.2.1 dan tidak membaca sumber A. Waktu fixture bukan waktu Google; penerimaan live/VPS dan target <60 detik belum terverifikasi. Pacing default tetap 1,2 detik.
+
+## Pengembangan
+
+Python 3.10+, Node 20+, dependency locks yang sama:
 
 ```bash
 bash scripts/dev-install.sh
@@ -38,16 +48,16 @@ PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium bash scripts/e2e.sh
 python3 scripts/package.py
 ```
 
-ZIP menyertakan source, migrasi, test, dokumentasi dan frontend prebuilt `public/`. Key nyata, password, database, `.env`, cache, virtualenv dan node_modules dikecualikan. `scripts/verify-real-run.py RUN_ID` memverifikasi tulisan nyata hanya dengan GET dan registry yang dipin.
+ZIP berisi source, migrasi, seluruh test/docs dan frontend prebuilt `public/`. Database/runtime state, key nyata, .env, caches, virtualenv dan node_modules dikecualikan.
 
-## Laporan rilis
+## Bukti rilis
 
-- [Root cause dan jalur GET mahal](ROOT_CAUSE_V421.md)
-- [Proof invariant dan fallback](INVARIANTS_V421.md)
-- [Laporan pengujian](TEST_REPORT.md)
-- [Benchmark sebelum/sesudah dan batas live](PERFORMANCE_V421.md)
-- [Perubahan per file](CHANGED_FILES_V421.md)
-- [Upgrade/rollback](UPGRADE_V421.md)
-- [Catatan rilis](RELEASE_NOTES_V421.md)
+- [Architecture/routing/identity](ARCHITECTURE_V422.md)
+- [Cakupan 79 persyaratan](COVERAGE_V422.md)
+- [Hasil pengujian dan batas live](TEST_REPORT.md)
+- [Benchmark V4.2.1 vs V4.2.2](PERFORMANCE_V422.md)
+- [Upgrade dan rollback](UPGRADE_V422.md)
+- [Perubahan per file](CHANGED_FILES_V422.md)
+- [Baseline](BASELINE_V422.md) dan [catatan rilis](RELEASE_NOTES_V422.md)
 
-Validasi Google/VPS asli dan target <60 detik masih pending. Pacing global default tetap 1,2 detik; 78 request tujuan saja memerlukan sekitar 92,4 detik jarak start sebelum latensi/sumber. Tanpa token, pada geometry sparse atau proof global mahal, fallback penuh tetap dipakai demi keselamatan. Source indexing/snapshots/registration/auth/UI/concurrency dan cap resource tidak berubah. Laporan V4.2/V4.1/V4/V3 dipertahankan di docs.
+Laporan dan arsip rilis sebelumnya tetap dipertahankan. Pengujian development menggunakan fixture Google terisolasi; tidak ada klaim deployment atau financial write produksi sudah dilakukan.
